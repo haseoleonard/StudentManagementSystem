@@ -14,6 +14,7 @@ namespace DTO
         bool isStudentIDExisted(const string &id);
         bool isValidGrade(const float inputedMark);
         bool isValidDateOfBirth(const string &inputedDateOfBirth);
+        int getIndexByID(const string &id);
 
     public:
         StudentList(/* args */);
@@ -95,14 +96,24 @@ namespace DTO
                 {
                 }
             } while (!isValidGrade(mark));
-            Student *newStudent = new Student(id,name,dob,mark);
-            _studentList->add(*newStudent);
-            cout<<"Student Added Successfully"<<endl;
+            cout<<endl;
+            if (!isStudentIDExisted(id))
+            {
+                Student *newStudent = new Student(id, name, dob, mark);
+                _studentList->add(*newStudent);
+                delete newStudent;
+                cout << "Student Added Successfully" << endl;
+            }
+            else
+            {
+                cout << "Student ID Existed" << endl;
+            }
         }
         catch (std::exception ex)
         {
-            cout<<"Add Failed"<<endl;
+            cout << "Add Failed" << endl;
         }
+        fflush(stdin);
         getchar();
     }
 
@@ -129,7 +140,57 @@ namespace DTO
         {
             cout << ex.what() << endl;
         }
+        fflush(stdin);
         getchar();
     }
-
+    int StudentList::getIndexByID(const string &id)
+    {
+        if (!_studentList->isEmpty())
+            for (int i = 0; i < _studentList->length(); i++)
+                if (id.compare(_studentList->get(i)->getStudentCode())==0)
+                    return i;
+        return -1;
+    }
+    void StudentList::deleteStudent()
+    {
+        try
+        {
+            string id;
+            do
+            {
+                _flushall();
+                cout << "Enter Student ID to Delete: ";
+                getline(cin, id);
+                if (id.empty())
+                {
+                    cout << "Please enter an StudentID" << endl;
+                    getchar();
+                }
+            } while (id.empty());
+            int index = getIndexByID(id);
+            cout<<endl;
+            if (index != -1)
+            {
+                Student *removedStudent = _studentList->removeAt(index);
+                if (removedStudent != nullptr)
+                {
+                    cout << "Remove Student Succesfully" << endl;
+                    cout << "Student ID: " + removedStudent->getStudentCode() << endl;
+                    cout << "Student Name: " + removedStudent->getStudentName() << endl;
+                    cout << "Student Date Of Birth: " + removedStudent->getDateOfBirth() << endl;
+                    cout << "Student Mark: " + to_string(removedStudent->getLearningPoint()) << endl;
+                }
+            }
+            else
+            {
+                cout << "Student Not Existed" << endl;
+            }
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        fflush(stdin);
+        getchar();
+    }
 } // namespace DTO

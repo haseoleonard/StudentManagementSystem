@@ -9,23 +9,24 @@ class ArrayList
 {
 private:
     /* data */
-    T *_list;
+    T **_list;
     int _size;
     int _listSize;
     bool needExpansion();
     void expandArray();
     bool isValidIndex(int index);
+
 public:
     ArrayList(/* args */);
     bool add(const T &object);
     T *get(int index);
     int length() { return _size; };
     T *removeAt(int index);
-    bool isEmpty(){return _size==0;};
+    bool isEmpty() { return _size == 0; };
     void clear();
     ~ArrayList()
     {
         delete[] & _list;
     };
 };
-#include"ArrayList.inl"
+#include "ArrayList.inl"
